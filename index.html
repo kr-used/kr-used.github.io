@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<title>Singsteemit</title>
+<link rel="manifest" href="./manifest.json">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/png" href="//steemit.com/images/favicons/favicon-196x196.png" sizes="196x196" />
+<link href='//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel="stylesheet" type="text/css" />
+<link href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link href="//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Noto+Sans+KR:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">  
+  <v-app>
+    <v-content>
+<!-- 
+<div class="jumbotron">
+	<h1 class="display-4">[콘테스트] 제 1회 나는 코노 가수다!!</h1>
+	<p class="lead">뉴비존님(<a href="https://steemit.com/@newbijohn" onclick="return !window.open(this.href)">@newbijohn</a>)께서 개최하신 <q>제 1회 나는 코노(코인노래방) 가수다!!</q> 콘테스트입니다.</p>
+	<hr class="my-4">
+	<p>참여기간: 2018-10-24 ~ 2018-10-31 까지</p>
+	<a class="btn btn-primary btn-lg" href="https://steemit.com/kr/@newbijohn/77utdm-1-feat" role="button" onclick="return !window.open(this.href)">자세히 보러가기</a>
+</div>
+-->
+      <div class="container">
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </div>
+    </v-content>
+  </v-app>
+</div>
+<script src="//unpkg.com/vue/dist/vue.js"></script>
+<script src="//unpkg.com/vue-router/dist/vue-router.js"></script>
+<script src="//cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="//cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+<script src="//cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js"></script>
+<script src="//cdn.steemjs.com/lib/latest/steem.min.js"></script><!-- https://github.com/steemit/steem-js/ -->
+<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script id="ListComponent" type='text/template'>
+<div class="container">
+	<div class="row" v-if="items && items.length > 0" >
+    <div class="col-sm mt-2" v-for="item in items" :key='item.id'>
+      <div class="card">
+        <div class="card-img-top">
+          <div v-if="item.streaming_type === 'youtube'" class='youtube' :style="'background-image: url(https://img.youtube.com/vi/' + item.streaming_id + '/0.jpg);'">
+            <div class='play' @click='play($event, item.streaming_id)'></div>
+            <!--<iframe width="640" height="360" src="https://www.youtube.com/embed/j1gu65pDnuM?autoplay=1&amp;autohide=1&amp;enablejsapi=0&amp;rel=0&amp;origin=https://steemit.com" frameborder="0" allowfullscreen=""></iframe>-->
+          </div>
+          <div v-if="item.streaming_type === 'soundcloud'" class='soundcloud'>
+            <iframe frameborder="0" allowfullscreen style="width:100%;border:0" :src="'https://w.soundcloud.com/player/?url=' + item.streaming_id + '&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&visual=true'" />
+          </div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">
+            <!--<router-link :to="'/@' + item.author + '/' + item.permlink">{{item.title}}</router-link>-->
+            <a href='javascript:return false' @mouseover="preload(item.id)" data-toggle="modal" data-target="#modal">{{item.title}}</a>
+          </h5>
+          <div class="card-text">
+            <div class='ellipsis'>{{ item.summary }}</div>
+            <div class='text-right' v-if='false'>
+              <a :href="'https://steemit.com' + item.url" onclick="return !window.open(this.href)" class="badge badge-secondary align-middle small">go <i>steemit.com</i> <i class="material-icons align-middle small">launch</i></a>
+            </div>
+          </div>
+          <p class="card-text mt-1">
+            <small class="text-muted">by <a :href="'https://steemit.com/@' + item.author" onclick='return !window.open(this.href)'>@{{item.author}}</a> <i>on {{item.created}}</i></small>
+          </p>
+        </div>
+        <div class="card-footer">	
+          <small class="text-muted">
+            <b>♥ {{item.net_votes}}</b>
+          </small>
+          <div class="float-right">				
+            <small class="text-muted">
+              <b>$ {{item.payout_value}}</b>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+	</div>
+	<div v-if="items.length === 0">
+		<div class="progress mt-5" style="height: 30px;">
+			<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+				불러오는 중...
+			</div>
+		</div>
+	</div>
+	<ModalComponent :post="post"></ModalComponent>
+</div>
+</script>
+<script id="ModalComponent" type='text/template'>
+<div id='modal' class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ post.title }}</h5>
+		<!--
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+		-->
+      </div>
+      <div class="modal-body">
+        <!--<div v-html="html"></div>-->
+				<component :is="dynamicComponent" />
+      </div>
+      <div class="modal-footer">
+        <a :href="'https://steemit.com' + post.url" onclick='return !window.open(this.href)' role="button" class="btn btn-primary">Go <i>steemit.com</i> <i class="material-icons align-middle">launch</i></a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+</script>
+<!-- Load Babel -->
+<!-- v6 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+const converter = new showdown.Converter();
+const ModalComponent = { 
+	template: '#ModalComponent',
+	name: 'Modal',
+	props: ['post'],
+	computed: {
+		dynamicComponent: function() {
+      if(!this.post.body) return "";
+			let body = (this.post.body || '');
+			// console.log(body);
+			const find_urls = (`\n${body}`.match(/[^\(='"\/\\](http(s)?:\/\/steemitimages.com\/([0-9]+x[0-9]+)\/)?http(s)?:\/\/(\w*:\w*@)?[-\w.]+(:\d+)?(\/([-\w/_.]*(\?\S+)?)?)?/g) || []).reduce(function(a,b){if(a.indexOf(b)<0)a.push(b);return a;},[]);
+			// console.log(find_urls);
+			for(let i=0, s=find_urls.length, url = find_urls[i]; i<s; i++, url = find_urls[i]) {
+        url = url.replace(/(^>|\s)/g, '');
+				if(url.indexOf('youtu')!==-1) {
+          const [_,youTubeId] = url.match(/(?:(?:youtube.com\/watch\?v=)|(?:youtu.be\/)|(?:youtube.com\/embed\/))([A-Za-z0-9\_\-]+)/i);
+					body = body.replace(url, `<iframe width="640" height="360" src="https://www.youtube.com/embed/${youTubeId}?autoplay=0&amp;autohide=0&amp;enablejsapi=0&amp;rel=0&amp;origin=https://steemit.com" frameborder="0" allowfullscreen=""></iframe>`);
+				};
+        if(/(.(?:tiff?|jpe?g|gif|png|svg|ico))$/.test(url)) {
+          body = body.replace(new RegExp(`${url}`, 'g'), `<img src='${url}'/>`);
+        };
+				// 이미지
+				// "(?:(?:\\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs/[a-z\\d]{40,}))"
+				// "/(https?:\/\/.*)?\/ipfs/i"				
+			};
+			body = converter.makeHtml(body);
+			// body = body.replace(/\n/g, '<br>');
+		  return {
+        template: `<div>${body}</div>`,
+		  }
+		}
+	  },
+}
+const ListComponent = { 
+	template: '#ListComponent',
+	name: 'List',
+	data () {
+		return {
+			items: [],
+			post: {},
+		}
+	},
+	components: {
+		ModalComponent,
+	},
+	created () {
+		//Singsteemit
+		const query = { 
+			tag: 'kr-used', 
+			limit: 100 
+		};
+		steem.api.getDiscussionsByCreated(query, (err, res) => {
+			if (err) return !alert(err);
+			// console.log(res)
+			this.items = res.map(({
+				id,
+				active_votes,
+				author,
+				author_reputation,
+				body,
+				cashout_time,
+				category,
+				children,
+				created,
+				curator_payout_value,
+				json_metadata,
+				net_votes,
+				parent_author,
+				parent_permlink,
+				pending_payout_value,
+				permlink,
+				title,
+				total_payout_value,
+				total_pending_payout_value,
+				total_vote_weight,
+				abs_rshares,
+				url,
+			}) => {
+				//
+				let streaming_type = '';
+				let streaming_id = '';
+				const youTubeId = body.match(/(?:(?:youtube.com\/watch\?v=)|(?:youtu.be\/)|(?:youtube.com\/embed\/))([A-Za-z0-9\_\-]+)/i);
+				if(youTubeId && youTubeId.length) {
+					//console.log(youTubeId);
+					streaming_type = 'youtube';
+					streaming_id = youTubeId[1];
+					//main = `<iframe src="https://www.youtube.com/embed/${youTubeId[1]}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+				}
+				//const soundcloud = body.match(/^"?https:\/\/w.soundcloud.com\/player\/.*/i);
+				const soundcloud = body.match(/"?https:\/\/w.soundcloud.com\/player\/\?url=(.+?)&"?/i)
+				if(soundcloud && soundcloud.length) {
+					streaming_type = 'soundcloud';
+					streaming_id = soundcloud[1];
+					//console.log(streaming_id);
+				}
+				created = new Date(`${created}Z`).toDateString();
+				const payout_value = (parseFloat(total_payout_value.split(' ')[0]) + parseFloat(curator_payout_value.split(' ')[0]) + parseFloat(pending_payout_value.split(' ')[0])).toFixed(3)
+				// 썸머리 생성
+				const summary = this.makeSummary(body);
+				return {
+					id,
+					streaming_type,
+					streaming_id,
+					author,
+					author_reputation,
+					body,
+					summary,
+					children,
+					created,
+					json_metadata,
+					net_votes,
+					active_votes,
+					permlink,
+					title,
+					abs_rshares,
+					payout_value,
+					url,
+				};
+			});
+		});
+	},
+	methods: {
+    play(e, id) {
+      // console.log(e.target);
+      e.target.parentElement.innerHTML = `<iframe width="640" height="360" src="https://www.youtube.com/embed/${id}?autoplay=1&autohide=1&enablejsapi=0&rel=0&origin=https://steemit.com" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    },
+		preload (id) {
+			// console.log('preload:', id);
+			//this.url = `https://steemit.com${url}`;
+			const find_post = this.items.filter((e) => (e.id === id))[0];
+      if(find_post.id !== this.post.id) {
+				this.post = find_post;
+			}
+		},
+		makeSummary (text) {
+			let summary = converter.makeHtml(text);
+			summary = summary.replace(/<(?:.|\n)*?>/gm, '');
+			summary = summary.replace(/(http(s)?:\/\/steemitimages.com\/([0-9]+x[0-9]+)\/)?http(s)?:\/\/(\w*:\w*@)?[-\w.]+(:\d+)?(\/([\w/_.]*(\?\S+)?)?)?/g, '');
+			summary = summary.replace(/(\s)+Sponsored \( Powered by dclick \)(.|\n)*/im, '');
+			let sentences = summary.split('\n');
+			const findIndex = sentences.findIndex((e)=>/(도전|노래|^코인노래방)/g.test(e));
+			if(findIndex>0) sentences = ['…'].concat(sentences.slice(findIndex));
+			return sentences.join(' ');
+		}
+	}
+}
+function setItem (key, value) {
+	if(typeof(value)==="object") value = JSON.stringify(value)
+	window.localStorage.setItem(key, value)
+}
+function getItem (key) {
+	return JSON.parse(window.localStorage.getItem(key))
+}
+const router = new VueRouter({
+	routes : [
+		{ path: '/', component: ListComponent },
+	]
+});
+const app = new Vue({
+  el: '#app',
+  router
+});
+</script>
+</body>
+</html>

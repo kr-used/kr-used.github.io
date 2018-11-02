@@ -1,0 +1,26 @@
+{
+  "name": "kr-used",
+  "version": "1.0.0",
+  "description": "중고거래마켓 in steemit.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kr-used/kr-used.github.io.git"
+  },
+  "keywords": [
+    "kr-used",
+    "steemit"
+  ],
+  "author": "anpigon <markan82@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kr-used/kr-used.github.io/issues"
+  },
+  "homepage": "https://github.com/kr-used/kr-used.github.io#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
