@@ -55,7 +55,7 @@
 .post_body img,
 .modal .modal-body img, 
 .modal .modal-body iframe {
-	max-width: 100%
+	max-width: 100%!important;
 }
 .modal .modal-body div.pull-left {
   float: left;
