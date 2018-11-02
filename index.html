@@ -1,134 +1,149 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<title>Singsteemit</title>
-<link rel="manifest" href="./manifest.json">
+<title>스팀잇중고월드</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/png" href="//steemit.com/images/favicons/favicon-196x196.png" sizes="196x196" />
 <link href='//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel="stylesheet" type="text/css" />
-<link href="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 <link href="//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Noto+Sans+KR:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/vuetify/1.3.5/vuetify.min.css" rel="stylesheet">
 <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
-<div id="app">  
+<div id="app" v-cloak>  
   <v-app>
+		<v-toolbar
+      color="blue darken-3"
+      dark
+      app
+      fixed>
+			<v-toolbar-title style="width: 300px" class="ml-0 pl-3">
+				<v-avatar size="32px" >
+					<img src="https://steemitimages.com/u/kr-used/avatar" alt="kr-used">
+				</v-avatar>
+        <span class="ml-1">스팀잇중고월드</span>
+      </v-toolbar-title>
+      <!-- <v-text-field
+        flat
+        solo-inverted
+        hide-details
+        prepend-inner-icon="search"
+        label="Search"
+        class="hidden-sm-and-down"
+      ></v-text-field> -->
+			<v-spacer></v-spacer>
+			<!-- <v-toolbar-items>
+				<v-divider vertical></v-divider>
+				<v-btn flat>구매</v-btn>
+				<v-divider vertical></v-divider>
+				<v-btn flat>판매</v-btn>
+				<v-divider vertical></v-divider>
+			</v-toolbar-items> -->
+    </v-toolbar>
     <v-content>
-<!-- 
-<div class="jumbotron">
-	<h1 class="display-4">[콘테스트] 제 1회 나는 코노 가수다!!</h1>
-	<p class="lead">뉴비존님(<a href="https://steemit.com/@newbijohn" onclick="return !window.open(this.href)">@newbijohn</a>)께서 개최하신 <q>제 1회 나는 코노(코인노래방) 가수다!!</q> 콘테스트입니다.</p>
-	<hr class="my-4">
-	<p>참여기간: 2018-10-24 ~ 2018-10-31 까지</p>
-	<a class="btn btn-primary btn-lg" href="https://steemit.com/kr/@newbijohn/77utdm-1-feat" role="button" onclick="return !window.open(this.href)">자세히 보러가기</a>
-</div>
--->
-      <div class="container">
         <keep-alive>
           <router-view></router-view>
         </keep-alive>
-      </div>
     </v-content>
   </v-app>
 </div>
-<script src="//unpkg.com/vue/dist/vue.js"></script>
-<script src="//unpkg.com/vue-router/dist/vue-router.js"></script>
-<script src="//cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="//cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/vue-router/3.0.1/vue-router.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/vuetify/1.3.5/vuetify.min.js"></script>
 <script src="//cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js"></script>
-<script src="//cdn.steemjs.com/lib/latest/steem.min.js"></script><!-- https://github.com/steemit/steem-js/ -->
-<script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/remarkable/1.7.1/remarkable.min.js"></script>
+<script src="//cdn.steemjs.com/lib/latest/steem.min.js"></script>
+
 <script id="ListComponent" type='text/template'>
-<div class="container">
-	<div class="row" v-if="items && items.length > 0" >
-    <div class="col-sm mt-2" v-for="item in items" :key='item.id'>
-      <div class="card">
-        <div class="card-img-top">
-          <div v-if="item.streaming_type === 'youtube'" class='youtube' :style="'background-image: url(https://img.youtube.com/vi/' + item.streaming_id + '/0.jpg);'">
-            <div class='play' @click='play($event, item.streaming_id)'></div>
-            <!--<iframe width="640" height="360" src="https://www.youtube.com/embed/j1gu65pDnuM?autoplay=1&amp;autohide=1&amp;enablejsapi=0&amp;rel=0&amp;origin=https://steemit.com" frameborder="0" allowfullscreen=""></iframe>-->
-          </div>
-          <div v-if="item.streaming_type === 'soundcloud'" class='soundcloud'>
-            <iframe frameborder="0" allowfullscreen style="width:100%;border:0" :src="'https://w.soundcloud.com/player/?url=' + item.streaming_id + '&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&visual=true'" />
-          </div>
-        </div>
-        <div class="card-body">
-          <h5 class="card-title">
-            <!--<router-link :to="'/@' + item.author + '/' + item.permlink">{{item.title}}</router-link>-->
-            <a href='javascript:return false' @mouseover="preload(item.id)" data-toggle="modal" data-target="#modal">{{item.title}}</a>
-          </h5>
-          <div class="card-text">
-            <div class='ellipsis'>{{ item.summary }}</div>
-            <div class='text-right' v-if='false'>
-              <a :href="'https://steemit.com' + item.url" onclick="return !window.open(this.href)" class="badge badge-secondary align-middle small">go <i>steemit.com</i> <i class="material-icons align-middle small">launch</i></a>
-            </div>
-          </div>
-          <p class="card-text mt-1">
-            <small class="text-muted">by <a :href="'https://steemit.com/@' + item.author" onclick='return !window.open(this.href)'>@{{item.author}}</a> <i>on {{item.created}}</i></small>
-          </p>
-        </div>
-        <div class="card-footer">	
-          <small class="text-muted">
-            <b>♥ {{item.net_votes}}</b>
-          </small>
-          <div class="float-right">				
-            <small class="text-muted">
-              <b>$ {{item.payout_value}}</b>
-            </small>
-          </div>
-        </div>
-      </div>
-    </div>
-	</div>
-	<div v-if="items.length === 0">
-		<div class="progress mt-5" style="height: 30px;">
-			<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-				불러오는 중...
-			</div>
-		</div>
-	</div>
-	<ModalComponent :post="post"></ModalComponent>
-</div>
+<v-container grid-list-md>
+	<v-layout justify-center row wrap v-if="items && items.length > 0">
+		<v-flex 
+			xs12 sm6 md4 xl3
+			v-for="item in items" 
+			:key='item.id'>
+			<v-card>
+				<v-img
+					:src="'https://steemitimages.com/0x200/' + item.image_url"
+					aspect-ratio="2.75"
+					height="200px"
+				><div class="fill-height bottom-gradient"></div></v-img>
+				<v-card-title>
+					<div>
+						<h5 class="headline mb-0"><a href='#' @mouseover="selected = item.id" @click.prevent='dialogShow = true'>{{ item.title }}</a></h5>
+						<!-- <h5 class="headline mb-0">
+							<router-link :to="'/@' + item.author + '/' + item.permlink">{{item.title}}</router-link>
+						</h5> -->
+						<div class='ellipsis-text'>{{ item.summary }}</div>
+						<div class="grey--text mt-2">
+							by <a :href="'https://steemit.com/@' + item.author" onclick='return !window.open(this.href)'>@{{item.author}}</a> <i>on {{item.created}}</i>
+						</div>
+					</div>
+				</v-card-title>
+				<v-divider></v-divider>
+				<v-card-actions class='pl-3 pr-2'>
+					<b class='text-muted'><span class='icon_like'>♥</span> {{item.net_votes}}</b>
+					<v-spacer></v-spacer>
+					<b class='text-muted'>$ {{item.payout_value}}</b>
+				</v-card-actions>
+			</v-cardz>
+		</v-flex>
+		<DialogComponent :show="dialogShow" :post="post" @close="dialogClose"></DialogComponent>
+	</v-layout>
+	<v-progress-linear
+			:active="busy"
+			:indeterminate="true"
+		>불러오는 중...</v-progress-linear>
+</v-container>
 </script>
-<script id="ModalComponent" type='text/template'>
-<div id='modal' class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{{ post.title }}</h5>
-		<!--
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-		-->
-      </div>
-      <div class="modal-body">
-        <!--<div v-html="html"></div>-->
+
+<script id="DialogComponent" type='text/template'>
+<v-dialog v-model="show" scrollable persistent transition="dialog-bottom-transition" max-width="600px">
+	<v-card>
+		<v-card-title
+			class="headline"
+			primary-title> 
+			{{ post.title }}
+		</v-card-title>
+		<v-divider></v-divider>
+		<v-card-text>
+			<div class='post_body'>
 				<component :is="dynamicComponent" />
-      </div>
-      <div class="modal-footer">
-        <a :href="'https://steemit.com' + post.url" onclick='return !window.open(this.href)' role="button" class="btn btn-primary">Go <i>steemit.com</i> <i class="material-icons align-middle">launch</i></a>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+			</div>
+		</v-card-text>
+		<v-divider></v-divider>
+		<v-card-actions>
+			<v-spacer></v-spacer>
+			<!-- <v-btn></v-btn> -->
+			<v-btn color="primary"  depressed :href="'https://steemit.com' + post.url" target='_blank'>
+				go <i>steemit.com</i>
+				<v-icon right dark>launch</v-icon>
+			</v-btn>
+			<v-btn depressed color="blue-grey" dark @click="close">Close</v-btn>
+		</v-card-actions>
+	</v-card>
+</v-dialog>
 </script>
+
 <!-- Load Babel -->
 <!-- v6 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/babel">
-const converter = new showdown.Converter();
-const ModalComponent = { 
-	template: '#ModalComponent',
-	name: 'Modal',
-	props: ['post'],
+const md = new Remarkable({
+  html: true,
+  linkify: true,
+  typographer: true,
+  quotes: '“”‘’',
+  breaks: true
+});
+
+const DialogComponent = { 
+	template: '#DialogComponent',
+	name: 'Dialog',
+	props: ['post', 'show'],
 	computed: {
 		dynamicComponent: function() {
       if(!this.post.body) return "";
@@ -142,140 +157,103 @@ const ModalComponent = {
           const [_,youTubeId] = url.match(/(?:(?:youtube.com\/watch\?v=)|(?:youtu.be\/)|(?:youtube.com\/embed\/))([A-Za-z0-9\_\-]+)/i);
 					body = body.replace(url, `<iframe width="640" height="360" src="https://www.youtube.com/embed/${youTubeId}?autoplay=0&amp;autohide=0&amp;enablejsapi=0&amp;rel=0&amp;origin=https://steemit.com" frameborder="0" allowfullscreen=""></iframe>`);
 				};
-        if(/(.(?:tiff?|jpe?g|gif|png|svg|ico))$/.test(url)) {
+        if(/(.(?:tiff?|jpe?g|gif|png|svg|ico))$/.test(url) || /ipfs.busy/.test(url)) {
           body = body.replace(new RegExp(`${url}`, 'g'), `<img src='${url}'/>`);
         };
 				// 이미지
 				// "(?:(?:\\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs/[a-z\\d]{40,}))"
 				// "/(https?:\/\/.*)?\/ipfs/i"				
 			};
-			body = converter.makeHtml(body);
-			// body = body.replace(/\n/g, '<br>');
+			body = md.render(body);
 		  return {
         template: `<div>${body}</div>`,
 		  }
 		}
-	  },
+	},
+	methods: {
+		close() {
+			this.$emit('close');
+		}
+	}
 }
+
 const ListComponent = { 
 	template: '#ListComponent',
 	name: 'List',
 	data () {
 		return {
 			items: [],
-			post: {},
+			busy: true,
+			dialogShow: false,
+			selected: false,
+			// post: {},
 		}
 	},
 	components: {
-		ModalComponent,
+		DialogComponent,
+	},
+	computed: {
+		post() {
+			return this.selected ? this.items.filter((e) => (e.id === this.selected))[0] : {};
+		}
+	},
+	watch: {
+		'dialogShow': (value) => {
+			console.log('dialogShow', value);
+			if(!value) {
+				document.querySelector('.v-dialog .v-card__text').scrollTo(0, 0);
+			}
+		}
 	},
 	created () {
-		//Singsteemit
-		const query = { 
-			tag: 'kr-used', 
-			limit: 100 
-		};
-		steem.api.getDiscussionsByCreated(query, (err, res) => {
-			if (err) return !alert(err);
-			// console.log(res)
-			this.items = res.map(({
-				id,
-				active_votes,
-				author,
-				author_reputation,
-				body,
-				cashout_time,
-				category,
-				children,
-				created,
-				curator_payout_value,
-				json_metadata,
-				net_votes,
-				parent_author,
-				parent_permlink,
-				pending_payout_value,
-				permlink,
-				title,
-				total_payout_value,
-				total_pending_payout_value,
-				total_vote_weight,
-				abs_rshares,
-				url,
-			}) => {
-				//
-				let streaming_type = '';
-				let streaming_id = '';
-				const youTubeId = body.match(/(?:(?:youtube.com\/watch\?v=)|(?:youtu.be\/)|(?:youtube.com\/embed\/))([A-Za-z0-9\_\-]+)/i);
-				if(youTubeId && youTubeId.length) {
-					//console.log(youTubeId);
-					streaming_type = 'youtube';
-					streaming_id = youTubeId[1];
-					//main = `<iframe src="https://www.youtube.com/embed/${youTubeId[1]}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-				}
-				//const soundcloud = body.match(/^"?https:\/\/w.soundcloud.com\/player\/.*/i);
-				const soundcloud = body.match(/"?https:\/\/w.soundcloud.com\/player\/\?url=(.+?)&"?/i)
-				if(soundcloud && soundcloud.length) {
-					streaming_type = 'soundcloud';
-					streaming_id = soundcloud[1];
-					//console.log(streaming_id);
-				}
-				created = new Date(`${created}Z`).toDateString();
-				const payout_value = (parseFloat(total_payout_value.split(' ')[0]) + parseFloat(curator_payout_value.split(' ')[0]) + parseFloat(pending_payout_value.split(' ')[0])).toFixed(3)
-				// 썸머리 생성
-				const summary = this.makeSummary(body);
-				return {
-					id,
-					streaming_type,
-					streaming_id,
-					author,
-					author_reputation,
-					body,
-					summary,
-					children,
-					created,
-					json_metadata,
-					net_votes,
-					active_votes,
-					permlink,
-					title,
-					abs_rshares,
-					payout_value,
-					url,
-				};
-			});
-		});
+		this.loadDiscussions();
 	},
 	methods: {
-    play(e, id) {
-      // console.log(e.target);
-      e.target.parentElement.innerHTML = `<iframe width="640" height="360" src="https://www.youtube.com/embed/${id}?autoplay=1&autohide=1&enablejsapi=0&rel=0&origin=https://steemit.com" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-    },
-		preload (id) {
-			// console.log('preload:', id);
-			//this.url = `https://steemit.com${url}`;
-			const find_post = this.items.filter((e) => (e.id === id))[0];
-      if(find_post.id !== this.post.id) {
-				this.post = find_post;
-			}
+		dialogClose() {
+			this.dialogShow = false;
+		},
+		loadDiscussions(tag, limit) {
+			this.busy = true;
+			const query = { 
+				tag: tag || 'kr-used', 
+				limit: limit || 100,
+			};
+			steem.api.getDiscussionsByCreated(query, (err, res) => {
+				if (err) return !alert(err);
+				// console.log(res);
+				this.items = res.map((e) => {
+					const created = new Date(`${e.created}Z`).toDateString();
+					const payout_value = (parseFloat(e.total_payout_value.split(' ')[0]) + parseFloat(e.curator_payout_value.split(' ')[0]) + parseFloat(e.pending_payout_value.split(' ')[0])).toFixed(3);
+					const summary = this.makeSummary(e.body);
+					const [ image_url ] = JSON.parse(e.json_metadata)['image'] || [];
+					return {
+						id: e.id,
+						author: e.author,
+						body: e.body,
+						net_votes: e.net_votes,
+						permlink: e.permlink,
+						title: e.title,
+						url: e.url,
+						image_url,
+						summary,
+						created,
+						payout_value,
+					};
+				});
+				this.busy = false;
+			});
 		},
 		makeSummary (text) {
-			let summary = converter.makeHtml(text);
+			let summary = md.render(text);
 			summary = summary.replace(/<(?:.|\n)*?>/gm, '');
 			summary = summary.replace(/(http(s)?:\/\/steemitimages.com\/([0-9]+x[0-9]+)\/)?http(s)?:\/\/(\w*:\w*@)?[-\w.]+(:\d+)?(\/([\w/_.]*(\?\S+)?)?)?/g, '');
 			summary = summary.replace(/(\s)+Sponsored \( Powered by dclick \)(.|\n)*/im, '');
 			let sentences = summary.split('\n');
-			const findIndex = sentences.findIndex((e)=>/(도전|노래|^코인노래방)/g.test(e));
+			const findIndex = 0;//sentences.findIndex((e)=>/(도전|노래|^코인노래방)/g.test(e));
 			if(findIndex>0) sentences = ['…'].concat(sentences.slice(findIndex));
-			return sentences.join(' ');
+			return sentences.join(' ').slice(0, 200);
 		}
 	}
-}
-function setItem (key, value) {
-	if(typeof(value)==="object") value = JSON.stringify(value)
-	window.localStorage.setItem(key, value)
-}
-function getItem (key) {
-	return JSON.parse(window.localStorage.getItem(key))
 }
 const router = new VueRouter({
 	routes : [

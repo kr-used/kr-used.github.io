@@ -4,6 +4,7 @@
   "description": "중고거래마켓 in steemit.com",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
