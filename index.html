@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="icon" type="image/png" href="//steemit.com/images/favicons/favicon-196x196.png" sizes="196x196" />
+<link rel="icon" type="image/png" href="//steemitimages.com/u/kr-used/avatar" sizes="128x128" />
 <link href='//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel="stylesheet" type="text/css" />
 <link href="//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Noto+Sans+KR:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
 <link href="//cdnjs.cloudflare.com/ajax/libs/vuetify/1.3.5/vuetify.min.css" rel="stylesheet">
@@ -16,8 +16,8 @@
 <div id="app" v-cloak>  
   <v-app>
 		<v-toolbar
-      color="blue darken-3"
-      dark
+      :color="theme"
+      :dark="dark"
       app
       fixed>
 			<v-toolbar-title style="width: 300px" class="ml-0 pl-3">
@@ -35,18 +35,56 @@
         class="hidden-sm-and-down"
       ></v-text-field> -->
 			<v-spacer></v-spacer>
-			<!-- <v-toolbar-items>
+			<v-toolbar-items>
 				<v-divider vertical></v-divider>
-				<v-btn flat>구매</v-btn>
+				<v-btn flat to='/'>HOME</v-btn>
 				<v-divider vertical></v-divider>
-				<v-btn flat>판매</v-btn>
+				<v-btn flat to='/kr-sellused'>판매글</v-btn>
 				<v-divider vertical></v-divider>
-			</v-toolbar-items> -->
+				<v-btn flat to='/kr-buyused'>구매글</v-btn>
+				<v-divider vertical></v-divider>
+			</v-toolbar-items>
     </v-toolbar>
     <v-content>
-        <keep-alive>
-          <router-view></router-view>
-        </keep-alive>
+			<div>
+				<v-alert
+					v-model="alert"
+					dismissible
+					type="info">
+					<a href='https://steemit.com/kr-used/@kr-used/5m7uvj-kr-used' target='_blank' class="white--text">[공지] kr-used 양식 , 유의사항 , 오픈채팅 , 텔레그램 한번에 보기</a>
+				</v-alert>
+				<div class="text-xs-center">
+					<v-btn
+						v-if="!alert"
+						color="primary"
+						dark
+						@click="alert = true">
+						Reset
+					</v-btn>
+				</div>
+			</div>
+
+			<keep-alive>
+				<router-view></router-view>
+			</keep-alive>
+				
+			<v-footer
+				height="auto"
+				absolute='true'
+				:color="theme"
+				:dark="dark">
+					<v-layout
+							justify-center
+							row wrap>
+						<v-flex
+							py-3
+							text-xs-center
+							white--text
+							xs12>
+							&copy;2018 — <strong><a href='https://steemit.com/@kr-used' target="_blank" class="white--text">@kr-used</a></strong>
+					</v-flex>
+				</v-layout>
+			</v-footer>
     </v-content>
   </v-app>
 </div>
@@ -59,44 +97,48 @@
 <script src="//cdn.steemjs.com/lib/latest/steem.min.js"></script>
 
 <script id="ListComponent" type='text/template'>
-<v-container grid-list-md>
+<v-container grid-list-md class='mb-5'>
 	<v-layout justify-center row wrap v-if="items && items.length > 0">
 		<v-flex 
-			xs12 sm6 md4 xl3
+			xs12 sm6 md4 lg3 xl3
 			v-for="item in items" 
 			:key='item.id'>
-			<v-card>
-				<v-img
-					:src="'https://steemitimages.com/0x200/' + item.image_url"
-					aspect-ratio="2.75"
-					height="200px"
-				><div class="fill-height bottom-gradient"></div></v-img>
-				<v-card-title>
-					<div>
-						<h5 class="headline mb-0"><a href='#' @mouseover="selected = item.id" @click.prevent='dialogShow = true'>{{ item.title }}</a></h5>
-						<!-- <h5 class="headline mb-0">
-							<router-link :to="'/@' + item.author + '/' + item.permlink">{{item.title}}</router-link>
-						</h5> -->
-						<div class='ellipsis-text'>{{ item.summary }}</div>
-						<div class="grey--text mt-2">
-							by <a :href="'https://steemit.com/@' + item.author" onclick='return !window.open(this.href)'>@{{item.author}}</a> <i>on {{item.created}}</i>
+			<v-hover>
+				<v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
+					<v-img
+						:src="'https://steemitimages.com/0x200/' + item.image_url"
+						:aspect-ratio="16/9"
+					><div class="fill-height bottom-gradient"></div></v-img>
+					<v-card-title>
+						<div>
+							<h5 class="headline mb-0"><a href='#' @mouseover="selected = item.id" @click.prevent='dialogShow = true'>{{ item.title }}</a></h5>
+							<!-- <h5 class="headline mb-0">
+								<router-link :to="'/@' + item.author + '/' + item.permlink">{{item.title}}</router-link>
+							</h5> -->
+							<div class='ellipsis-text' v-html='item.summary'></div>
+							<div class="grey--text mt-2">
+								by <a :href="'https://steemit.com/@' + item.author" onclick='return !window.open(this.href)'>@{{item.author}}</a> <i>on {{item.created}}</i>
+							</div>
 						</div>
-					</div>
-				</v-card-title>
-				<v-divider></v-divider>
-				<v-card-actions class='pl-3 pr-2'>
-					<b class='text-muted'><span class='icon_like'>♥</span> {{item.net_votes}}</b>
-					<v-spacer></v-spacer>
-					<b class='text-muted'>$ {{item.payout_value}}</b>
-				</v-card-actions>
-			</v-cardz>
+					</v-card-title>
+					<v-divider></v-divider>
+					<v-card-actions class='pl-3 pr-2'>
+						<b class='text-muted'><span class='icon_like'>♥</span> {{item.net_votes}}</b>
+						<v-spacer></v-spacer>
+						<b class='text-muted'>$ {{item.payout_value}}</b>
+					</v-card-actions>
+				</v-card>
+			</v-hover>
 		</v-flex>
 		<DialogComponent :show="dialogShow" :post="post" @close="dialogClose"></DialogComponent>
 	</v-layout>
-	<v-progress-linear
-			:active="busy"
-			:indeterminate="true"
-		>불러오는 중...</v-progress-linear>
+	<div class="text-xs-center" v-show='busy'>
+		<v-progress-linear
+				:active="busy"
+				:indeterminate="true"
+			></v-progress-linear>
+			<span class='progress-text' data-text="It's loading...">It's loading...</span>
+	</div>
 </v-container>
 </script>
 
@@ -106,12 +148,15 @@
 		<v-card-title
 			class="headline"
 			primary-title> 
-			{{ post.title }}
+			<h3 class='headline'>{{ post.title }}</h3>
 		</v-card-title>
 		<v-divider></v-divider>
 		<v-card-text>
 			<div class='post_body'>
 				<component :is="dynamicComponent" />
+				<v-chip label small color="blue-grey lighten-2" text-color="white" v-for='tag in post.tags' :key='tag'>
+					<v-icon left>label</v-icon>{{tag}}
+				</v-chip>
 			</div>
 		</v-card-text>
 		<v-divider></v-divider>
@@ -149,6 +194,7 @@ const DialogComponent = {
       if(!this.post.body) return "";
 			let body = (this.post.body || '');
 			// console.log(body);
+			// URL 처리
 			const find_urls = (`\n${body}`.match(/[^\(='"\/\\](http(s)?:\/\/steemitimages.com\/([0-9]+x[0-9]+)\/)?http(s)?:\/\/(\w*:\w*@)?[-\w.]+(:\d+)?(\/([-\w/_.]*(\?\S+)?)?)?/g) || []).reduce(function(a,b){if(a.indexOf(b)<0)a.push(b);return a;},[]);
 			// console.log(find_urls);
 			for(let i=0, s=find_urls.length, url = find_urls[i]; i<s; i++, url = find_urls[i]) {
@@ -159,12 +205,12 @@ const DialogComponent = {
 				};
         if(/(.(?:tiff?|jpe?g|gif|png|svg|ico))$/.test(url) || /ipfs.busy/.test(url)) {
           body = body.replace(new RegExp(`${url}`, 'g'), `<img src='${url}'/>`);
-        };
-				// 이미지
-				// "(?:(?:\\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs/[a-z\\d]{40,}))"
-				// "/(https?:\/\/.*)?\/ipfs/i"				
+				};			
 			};
+			// 마크다운 HTML 변환
 			body = md.render(body);
+			// 외부 링크 처리
+			body = body.replace(/(?:<a [^>]*(?:href="([^>^\"]*)")[^>]*>)/gi, `<a href='$1' target='_blank'>`);
 		  return {
         template: `<div>${body}</div>`,
 		  }
@@ -203,10 +249,15 @@ const ListComponent = {
 			if(!value) {
 				document.querySelector('.v-dialog .v-card__text').scrollTo(0, 0);
 			}
-		}
+		},
+		'$route' (to, from) {
+			const tag = to.params['tag'] || '';
+			this.loadDiscussions(tag);
+    }
 	},
 	created () {
-		this.loadDiscussions();
+		const tag = this.$route.params['tag'] || '';
+		this.loadDiscussions(tag);
 	},
 	methods: {
 		dialogClose() {
@@ -214,6 +265,7 @@ const ListComponent = {
 		},
 		loadDiscussions(tag, limit) {
 			this.busy = true;
+			this.items = [];
 			const query = { 
 				tag: tag || 'kr-used', 
 				limit: limit || 100,
@@ -225,7 +277,9 @@ const ListComponent = {
 					const created = new Date(`${e.created}Z`).toDateString();
 					const payout_value = (parseFloat(e.total_payout_value.split(' ')[0]) + parseFloat(e.curator_payout_value.split(' ')[0]) + parseFloat(e.pending_payout_value.split(' ')[0])).toFixed(3);
 					const summary = this.makeSummary(e.body);
-					const [ image_url ] = JSON.parse(e.json_metadata)['image'] || [];
+					const json_metadata = JSON.parse(e.json_metadata) || {};
+					const [ image_url ] = json_metadata['image'] || [];
+					const tags = json_metadata['tags'] || [];
 					return {
 						id: e.id,
 						author: e.author,
@@ -238,6 +292,7 @@ const ListComponent = {
 						summary,
 						created,
 						payout_value,
+						tags,
 					};
 				});
 				this.busy = false;
@@ -246,10 +301,10 @@ const ListComponent = {
 		makeSummary (text) {
 			let summary = md.render(text);
 			summary = summary.replace(/<(?:.|\n)*?>/gm, '');
-			summary = summary.replace(/(http(s)?:\/\/steemitimages.com\/([0-9]+x[0-9]+)\/)?http(s)?:\/\/(\w*:\w*@)?[-\w.]+(:\d+)?(\/([\w/_.]*(\?\S+)?)?)?/g, '');
 			summary = summary.replace(/(\s)+Sponsored \( Powered by dclick \)(.|\n)*/im, '');
+			summary = `\n${summary}`.replace(/[^\(='"\/\\](http(s)?:\/\/steemitimages.com\/([0-9]+x[0-9]+)\/)?http(s)?:\/\/(\w*:\w*@)?[-\w.]+(:\d+)?(\/([-\w/_.]*(\?\S+)?)?)?/g, '');
 			let sentences = summary.split('\n');
-			const findIndex = 0;//sentences.findIndex((e)=>/(도전|노래|^코인노래방)/g.test(e));
+			const findIndex = sentences.findIndex((e)=>/(판매 제품 설명)/g.test(e));
 			if(findIndex>0) sentences = ['…'].concat(sentences.slice(findIndex));
 			return sentences.join(' ').slice(0, 200);
 		}
@@ -258,11 +313,18 @@ const ListComponent = {
 const router = new VueRouter({
 	routes : [
 		{ path: '/', component: ListComponent },
+    { path: '/:tag', component: ListComponent },
 	]
 });
 const app = new Vue({
-  el: '#app',
-  router
+	el: '#app',
+  router,
+	data() {
+		return {
+			theme: 'blue darken-3',
+			dark: true,
+		}
+	},
 });
 </script>
 </body>
